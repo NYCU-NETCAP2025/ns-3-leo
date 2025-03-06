@@ -190,7 +190,7 @@ MockChannel::Deliver (
       	      return false;
     	    }
     	}
-      delay = GetPropagationDelay (srcMob, dstMob, txTime);
+      delay += GetPropagationDelay (srcMob, dstMob, txTime);
       NS_LOG_DEBUG ("delay = "<<delay);
     }
 

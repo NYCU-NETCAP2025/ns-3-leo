@@ -98,7 +98,8 @@ LeoGndNodeHelper::Install (uint32_t latNodes, uint32_t lonNodes)
 Vector3D
 LeoGndNodeHelper::GetEarthPosition (const LeoLatLong &loc)
 {
-  double lat = loc.latitude * (M_PI / 90);
+  // double lat = loc.latitude * (M_PI / 90);
+  double lat = (90-loc.latitude) * (M_PI / 180);
   double lon = loc.longitude * (M_PI / 180);
   Vector3D pos = Vector3D (LEO_GND_RAD_EARTH * sin (lat) * cos (lon),
   			   LEO_GND_RAD_EARTH * sin (lat) * sin (lon),
@@ -114,7 +115,7 @@ LeoGndNodeHelper::Install (const LeoLatLong &location1,
 
   NodeContainer nodes;
 
-  for (const LeoLatLong loc : { location1, location2 })
+  for (const LeoLatLong &loc : { location1, location2 })
     {
       Vector pos = GetEarthPosition (loc);
       Ptr<ConstantPositionMobilityModel> mob = CreateObject<ConstantPositionMobilityModel> ();
