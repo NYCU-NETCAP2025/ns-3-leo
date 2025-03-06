@@ -22,7 +22,6 @@
 #include "ns3/network-module.h"
 #include "ns3/aodv-module.h"
 #include "ns3/udp-server.h"
-#include "ns3/epidemic-routing-module.h"
 
 using namespace ns3;
 
@@ -157,24 +156,15 @@ int main (int argc, char *argv[])
   NetDeviceContainer utNet = utCh.Install (satellites, stations);
 
   InternetStackHelper stack;
-  if (routingProto == "epidemic")
+  AodvHelper aodv;
+  aodv.Set ("EnableHello", BooleanValue (false));
+  //aodv.Set ("HelloInterval", TimeValue (Seconds (10)));
+  if (ttlThresh != 0)
     {
-      EpidemicHelper epidemic;
-      //epidemic.Set ("BeaconInterval", TimeValue (MilliSeconds (100)));
-      stack.SetRoutingHelper (epidemic);
+    aodv.Set ("TtlThreshold", UintegerValue (ttlThresh));
+    aodv.Set ("NetDiameter", UintegerValue (2*ttlThresh));
     }
-  else
-    {
-      AodvHelper aodv;
-      aodv.Set ("EnableHello", BooleanValue (false));
-      //aodv.Set ("HelloInterval", TimeValue (Seconds (10)));
-      if (ttlThresh != 0)
-        {
-        aodv.Set ("TtlThreshold", UintegerValue (ttlThresh));
-        aodv.Set ("NetDiameter", UintegerValue (2*ttlThresh));
-        }
-      stack.SetRoutingHelper (aodv);
-    }
+  stack.SetRoutingHelper (aodv);
 
   // Install internet stack on nodes
   stack.Install (satellites);
